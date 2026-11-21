@@ -94,15 +94,13 @@ All money is stored as integer **SGD cents**, displayed as dollars in the interf
 
 An activity must fall within its trip dates. A trip's dates cannot be shortened to exclude existing activities. User profiles, destinations and countries that are still referenced cannot be deleted. Only cancelled trips can be purged; that purge removes their bookings and itinerary items together.
 
-## Team contributions
+## Team Members
 
-The report lists Chris Lim, KYAW SWAR MYO THANT and Xu Di. Agree on and record each member's actual contribution before submitting. No contribution assignments are inferred in this starter.
-
-| Team member | Actual contribution |
+| Team member | Student ID |
 | --- | --- |
-| Chris Lim | To be completed by the team |
-| KYAW SWAR MYO THANT | To be completed by the team |
-| Xu Di | To be completed by the team |
+| Chris Lim | A0287601A |
+| KYAW SWAR MYO THANT | A0287623W |
+| Xu Di | A0245429A |
 
 ## If something does not start
 
