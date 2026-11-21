@@ -1,110 +1,51 @@
 # VoySync Travel Planner
 
-TIC2601 group project using React (Vite), React Router, Express and SQLite. 
+I worked on VoySync with Kyaw Swar Myo Thant and Xu Di for our TIC2601 Database and Web Applications group project. I use it to plan a trip in stages: save places I might visit, decide which day to go, then check how much of my budget is left after booking flights, hotels or tours.
 
-## Start the project
+## Running VoySync locally
 
-Install Node.js 22.12 or newer. Open **this folder** in VS Code, open its terminal, then run:
+I use Node.js 22.12 or newer. From the project root, I install the dependencies and start the React app and Express API together:
 
 ```sh
 npm ci
 npm run dev
 ```
 
-Open **http://localhost:5173**. The API runs at **http://127.0.0.1:3001/api**. Keep the terminal running; press **Ctrl+C** to stop both applications. Run these commands from the project root, rather than from `client` or `server`.
+I open [VoySync in my browser](http://localhost:5173). The API runs on [port 3001](http://127.0.0.1:3001/api/health). On the first launch, the server creates `server/db/voysync.db` with fictional sample records. My changes persist when I close the app and return. To stop both processes, I press **Ctrl+C** in the terminal.
 
-The server creates `server/db/voysync.db` and sample records automatically on the first start. Changes persist in that file across restarts. Sample traveler names and `example.com` email addresses are fictional. Keep a backup of your database before experimenting with permanent deletion.
+## How I plan a trip
 
-Frontend edits refresh automatically. After editing backend files, stop and restart `npm run dev` to load the server changes.
+1. **Choose a destination.** In **Travelers**, I create a profile or use an existing one. In **Explore**, I compare destinations by estimated cost, filter by region and select **Plan a trip here**. I enter my dates and set my own budget in SGD.
+2. **Save places before choosing a day.** I open the trip from **My trips** and select **Save place**. A landmark stays under **Places to visit** until I schedule it. I can also add a custom activity, such as meeting a friend in the hotel lobby.
+3. **Build the daily itinerary.** I select **Add to day** for a saved place or **Add stop** beside a date. I can leave the time open or enter a destination-local time. If plans change, **Edit / move** reschedules the same stop and keeps its notes.
+4. **Check the map.** A scheduled landmark has the same color and number on the map as it does in the list. The landmark map works offline. I can turn on **Streets** when I have internet access or switch between **List** and **Map** on my phone.
+5. **Track reservations and spending.** In **Reservations**, I record the provider, booking reference, status and cost. **Budget** shows the planned amount, recorded booking costs and remaining balance. Cancelling a booking excludes its cost from the total. Changes in VoySync only update my local record.
 
-## Plan a trip
+For example, I can plan a Kyoto trip for 10–12 December 2026, save Nishiki Market and Pontocho Alley, then put both on Friday afternoon. With a planned budget of SGD 1,200 and a hotel booking of SGD 360, I have **SGD 840 remaining**. Moving the market visit to Saturday changes my schedule and keeps the hotel cost the same.
 
-Open **My trips** and choose a city. The Plan tab shows a saved-place list, a section for each travel day, and a map. Select **Save place** to keep an idea, or **Add stop** beside a day to schedule it directly. **Edit / move** changes a stop without duplicating it. Custom activities can be saved without coordinates.
+## Reports
 
-The offline landmark map uses coordinates from the curated catalog. The optional **Streets** layer requires internet access. The Kyoto offline view includes approximate reference streets and the Kamo River. Use the List / Map switch on a phone. In **Reservations**, create and update a booking for the current trip. **Budget** shows its planned amount, recorded bookings and remaining balance in SGD.
+I can use the shared trip records to answer four questions:
 
-To reproduce the slide example, add Riley in Travelers. Under Explore, choose Kyoto, select **Plan a trip here**, and enter 10–12 December 2026 and SGD 1,200. Save Nishiki Market and Pontocho Alley, then schedule both for Friday. A SGD 360 hotel booking leaves SGD 840.
+| Report | What I can find |
+| --- | --- |
+| Promotion audience | Travelers with a planning or confirmed trip to a selected region or country whose trip ends on or after the reporting date. |
+| Frequent travelers | Travelers with at least two noncancelled trips or at least two noncancelled bookings on noncancelled trips. |
+| Undiscovered destinations | Catalog destinations with no retained trip records. A cancelled trip still counts until it is purged. |
+| High-budget journeys | Trips whose planned budget is higher than every destination’s estimated base cost. |
 
-The React frontend uses React Router and Leaflet. The Express API persists seven SQLite tables. Four reports cover promotion audiences, frequent travelers, unused destinations and high-budget trips. This local classroom workspace has shared access to fictional records.
+## How the app stores a plan
 
-## Folder structure
+The frontend uses React, Vite and React Router, with Leaflet for the map. Express handles requests from the browser, and SQLite stores the data in seven tables. A catalog place holds reusable details such as coordinates. An itinerary item holds the date, time and notes for that particular visit. This lets two travelers visit the same place on different days.
 
-```text
-voysync-travel-planner/
-├── client/
-│   ├── public/
-│   ├── src/
-│   │   ├── assets/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── App.jsx
-│   │   ├── main.jsx
-│   │   └── index.css
-│   ├── index.html
-│   ├── package.json
-│   └── vite.config.js
-├── server/
-│   ├── controllers/
-│   ├── db/
-│   │   ├── voysync.db       # Created on first start; ignored by Git
-│   │   └── schema.sql
-│   ├── routes/
-│   ├── app.js
-│   └── package.json
-├── docs/
-├── scripts/dev.mjs
-├── .gitignore
-├── package.json
-└── README.md
-```
+Money is stored in integer SGD cents and displayed in dollars. A scheduled activity must fall within its trip dates. If I shorten a trip, I first move any activities that would fall outside the new dates. Cancelling a trip keeps its history. If I then confirm a permanent purge, VoySync removes its bookings and itinerary items while retaining the traveler and destination.
 
-The root `package.json` joins the client and server as npm workspaces, so one installation and one development command are enough. Commit `package-lock.json` so teammates install the same versions. Installed dependencies and the generated database are excluded from Git.
+The frontend is in `client/`, the API is in `server/`, and the schema and sample data are in `server/db/`. For the table relationships and request formats, see the [database notes](docs/DATABASE.md) and [API guide](docs/API.md).
 
-## How this follows the tutorial
-
-`client/index.html` provides the root element. `src/main.jsx` renders `BrowserRouter`, `App.jsx` declares nested routes, and `pages/Layout.jsx` renders the common navigation and `Outlet`. Routed pages manage state and pass values and callbacks to reusable components. This is the Week 12 pattern with VoySync pages replacing the tutorial's bookstore pages.
-
-Week 12 focuses on React structure and routing. The Express API and SQLite connection included here extend that tutorial to your project; they are not part of its Week 12 exercise. Your proposed `sqlite3` stack is used instead of adding Sequelize.
-
-Read [the tutorial walkthrough](docs/TUTORIAL_GUIDE.md), [database notes](docs/DATABASE.md), and [API guide](docs/API.md) for the next steps. The current framework references are [Vite's guide](https://vite.dev/guide/) and [React Router's routing guide](https://reactrouter.com/start/declarative/routing).
-
-## Useful commands
-
-```sh
-npm run dev       # Start client and API together
-npm run build     # Build the frontend into client/dist
-npm run lint      # Check frontend source
-npm test          # Run backend checks using isolated test databases
-```
-
-To use separate terminals:
-
-```sh
-npm run dev --workspace server
-npm run dev --workspace client
-```
-
-`npm start` runs the API only. `npm run preview --workspace client` previews a frontend build. A production deployment and its hosting configuration are not included.
-
-Verified 21 November 2026: ten backend tests, frontend lint and production build passed. Browser checks covered creating a traveler and trip, saving and scheduling places, reservations, budget, mobile list/map switching, cancellation, purge and the four reports.
-
-## Database rules to remember
-
-All money is stored as integer **SGD cents**, displayed as dollars in the interface. Dates use `YYYY-MM-DD`. Activities use destination-local `YYYY-MM-DD HH:MM:SS`, without time zone conversion. The planned budget is a planning amount; recorded bookings may exceed it. Remaining booking budget excludes cancelled bookings and does not include unrecorded expenses or refunds.
-
-An activity must fall within its trip dates. A trip's dates cannot be shortened to exclude existing activities. User profiles, destinations and countries that are still referenced cannot be deleted. Only cancelled trips can be purged; that purge removes their bookings and itinerary items together.
-
-## Team Members
+## Project team
 
 | Team member | Student ID |
 | --- | --- |
 | Chris Lim | A0287601A |
 | KYAW SWAR MYO THANT | A0287623W |
 | Xu Di | A0245429A |
-
-## If something does not start
-
-- Confirm that your terminal is inside `voysync-travel-planner` and run `npm ci` once before starting.
-- If port 5173 or 3001 is occupied, stop the older development server. The client proxy expects the API on port 3001.
-- If SQLite installation fails, use a supported Node.js LTS release and try again; some computers need local compiler tools for the `sqlite3` package.
-- The application upgrades the original six-table database transactionally on startup. Other future schema changes require their own migrations. Keep a backup and implement a migration, or create a fresh development database deliberately.
