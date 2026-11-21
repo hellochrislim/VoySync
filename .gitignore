@@ -1,0 +1,14 @@
+node_modules/
+.npm-cache/
+client/dist/
+coverage/
+.env
+.env.*
+!.env.example
+.DS_Store
+*.log
+server/db/*.db
+server/db/*.db-journal
+server/db/*.db-shm
+server/db/*.db-wal
+tmp/

@@ -1,0 +1,16 @@
+{
+  "name": "voysync-travel-planner",
+  "version": "0.1.0",
+  "private": true,
+  "description": "TIC2601 VoySync travel planner classroom project",
+  "type": "module",
+  "workspaces": ["client", "server"],
+  "engines": { "node": ">=22.12.0" },
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "build": "npm run build --workspace client",
+    "lint": "npm run lint --workspace client",
+    "test": "npm run test --workspace server",
+    "start": "npm run start --workspace server"
+  }
+}
